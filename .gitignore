@@ -1,0 +1,11 @@
+.classpath
+.gradle
+.nb-gradle-properties
+.nb-gradle/
+.project
+.settings/
+bin/
+build/
+gradle/wrapper/gradle-wrapper.jar
+
+
