@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
@@ -14,23 +13,36 @@ import java.util.Date;
 
 /**
  *
- * @author Maksym Shkolnyi aka Maksym Shkolnyi "&lt; maskimko@ukr.net &gt;" aka maskimko 
+ * @author Maksym Shkolnyi aka Maksym Shkolnyi "&lt; maskimko@ukr.net &gt;" aka
+ * maskimko
  */
 public class Log implements Serializable {
-private Calendar date;
-private int odometer;
-private float fuel;
-private boolean full;
-private Float price;
-private Float consumption;
-private Float latitude;
-private Float longitude;
-private String city;
-private String notes;
-private boolean missed;
-private int tankNumber;
-private int fuelType;
 
+    private long id;
+    
+    private Calendar date;
+    private int odometer;
+    private float fuel;
+    private boolean full;
+    private Float price;
+    private Float consumption;
+    private Float latitude;
+    private Float longitude;
+    private String city;
+    private String notes;
+    private boolean missed;
+    private int tankNumber;
+    private int fuelType;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    
     public Calendar getDate() {
         return date;
     }
@@ -38,13 +50,13 @@ private int fuelType;
     public void setDate(Calendar date) {
         this.date = date;
     }
-    
-    public void setDate(Date date){
+
+    public void setDate(Date date) {
         this.date = Calendar.getInstance();
         this.date.setTime(date);
     }
-    
-    public void setDate(String date) throws ParseException{
+
+    public void setDate(String date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         setDate(sdf.parse(date));
     }

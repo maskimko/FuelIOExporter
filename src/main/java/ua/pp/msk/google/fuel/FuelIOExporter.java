@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.LoggerFactory;
 import ua.pp.msk.google.fuel.parsers.ParserFactory;
 import ua.pp.msk.google.fuel.parsers.SectionParser;
 
@@ -139,14 +140,17 @@ public class FuelIOExporter {
 //            }
 //        }
         //0B4GzeDA85UlVYTI5NXFBWTdIZlE
-        Pattern headerPattern = Pattern.compile("^\"?##.*\"?");
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(service.files().get("0B4GzeDA85UlVYTI5NXFBWTdIZlE").executeMediaAsInputStream()))) {
-            String line = null;
+        parseFile(service, "0B4GzeDA85UlVYTI5NXFBWTdIZlE");
+
+    }
+    
+    private static void parseFile(Drive service, String id){
+         Pattern headerPattern = Pattern.compile("^\"?##.*\"?");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(service.files().get(id).executeMediaAsInputStream()))) {
+            String line;
             SectionParser sp = null;
             StringBuilder sb = null;
             while ((line = br.readLine()) != null) {
-
-                System.out.println(line);
                 Matcher m = headerPattern.matcher(line);
                 if (m.matches()) {
                     if (sp != null && sb != null) {
@@ -154,28 +158,19 @@ public class FuelIOExporter {
                     }
                     sp = ParserFactory.getParser(line);
                     sb = new StringBuilder();
-                    continue;
                 } else {
                     if (sb != null) {
                         sb.append(line).append("\r\n");
                     }
                 }
-
             }
+            //Parse last one
             if (sp != null && sb != null) {
                 sp.parse(sb.toString());
             }
-//                               try ( CSVParser parser = new CSVParser(br, CSVFormat.DEFAULT)) {
-//                            for (final CSVRecord record: parser) {
-//                                final String data = record.get("Data");
-//                                final String mileage = record.get("Mileage");
-//                                System.out.println(String.format("%s %s", data, mileage));
-//                            }
-//                        } catch (Exception e){}
         } catch (IOException ioex) {
-            System.err.println(ioex.getMessage());
+            LoggerFactory.getLogger(FuelIOExporter.class).error(ioex.getMessage(), ioex);
         }
-
     }
 
 }

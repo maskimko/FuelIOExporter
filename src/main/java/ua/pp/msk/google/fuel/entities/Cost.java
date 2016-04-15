@@ -15,6 +15,8 @@ import java.util.Calendar;
  */
 public class Cost implements Serializable {
 
+    private long id;
+    
     private String costTitle;
     private Calendar date;
     private int odometer;
@@ -30,6 +32,15 @@ public class Cost implements Serializable {
     private int repeatOdometer;
     private int repeatMonths;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    
     public String getCostTitle() {
         return costTitle;
     }

@@ -14,10 +14,19 @@ import java.io.Serializable;
  */
 public class CostCategory implements Serializable {
 
+    private long id;
     private int costTypeId;
     private String name;
     private int priority;
     private String color;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getCostTypeId() {
         return costTypeId;

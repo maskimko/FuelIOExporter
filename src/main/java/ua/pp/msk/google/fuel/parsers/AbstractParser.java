@@ -41,15 +41,18 @@ public abstract class AbstractParser<T> implements SectionParser {
         try (CSVParser parser = CSVParser.parse(s, CSVFormat.DEFAULT.withHeader())) {
             headerMap = parser.getHeaderMap();
             records = parser.getRecords();
-            for (CSVRecord r : records) {
-                logger.debug(type.getName());
-                headerMap.forEach((h, v) -> {
-                    logger.debug(String.format("\t%-20s: %s", h, r.get(v)));
+            if (logger.isDebugEnabled()){
+                records.stream().map((r) -> {
+                    logger.debug(type.getName());
+                    return r;
+                }).forEach((r) -> {
+                    headerMap.forEach((h, v) -> {
+                        logger.debug(String.format("\t%-20s: %s", h, r.get(v)));
+                    });
                 });
-
             }
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Cannot parse CSV " + ex.getMessage(), ex);
         }
     }
 
