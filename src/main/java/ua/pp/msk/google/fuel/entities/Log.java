@@ -6,6 +6,7 @@
 
 package ua.pp.msk.google.fuel.entities;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,15 +16,15 @@ import java.util.Date;
  *
  * @author Maksym Shkolnyi aka Maksym Shkolnyi "&lt; maskimko@ukr.net &gt;" aka maskimko 
  */
-public class Log {
+public class Log implements Serializable {
 private Calendar date;
 private int odometer;
 private float fuel;
 private boolean full;
-private float price;
-private float consumption;
-private float latitude;
-private float longitude;
+private Float price;
+private Float consumption;
+private Float latitude;
+private Float longitude;
 private String city;
 private String notes;
 private boolean missed;

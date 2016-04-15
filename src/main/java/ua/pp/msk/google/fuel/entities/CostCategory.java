@@ -5,12 +5,14 @@
  */
 package ua.pp.msk.google.fuel.entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Maksym Shkolnyi aka Maksym Shkolnyi "&lt; maskimko@ukr.net &gt;" aka
  * maskimko
  */
-public class CostCategory {
+public class CostCategory implements Serializable {
 
     private int costTypeId;
     private String name;

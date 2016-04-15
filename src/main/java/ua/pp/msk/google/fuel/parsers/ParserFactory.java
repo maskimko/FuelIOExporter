@@ -8,6 +8,7 @@ package ua.pp.msk.google.fuel.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import ua.pp.msk.google.fuel.entities.Vehicle;
 
 /**
  *
@@ -18,10 +19,10 @@ public class ParserFactory {
      private final static Pattern logPatern = Pattern.compile("^\"?##\\s*[Ll]og\"?");
      private final static Pattern costCategoryPatern = Pattern.compile("^\"?##\\s*[Cc]ost[Cc]ategories\"?");
       private final static Pattern costPatern = Pattern.compile("^\"?##\\s*[Cc]osts\"?");
+      static Vehicle currentVehicle;
     public static SectionParser getParser(String header){
         SectionParser sp = null;
-        Matcher vm = vehiclePatern.matcher(header);
-        if (vm.matches()){
+        if (vehiclePatern.matcher(header).matches()){
             sp = new VehicleParser();
         }
         if (logPatern.matcher(header).matches()){

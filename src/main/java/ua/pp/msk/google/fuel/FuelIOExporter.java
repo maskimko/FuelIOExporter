@@ -149,16 +149,21 @@ public class FuelIOExporter {
                 System.out.println(line);
                 Matcher m = headerPattern.matcher(line);
                 if (m.matches()) {
-                   if (sp != null && sb!= null) {
-                       sp.parse(sb.toString());
-                   }
+                    if (sp != null && sb != null) {
+                        sp.parse(sb.toString());
+                    }
                     sp = ParserFactory.getParser(line);
                     sb = new StringBuilder();
                     continue;
                 } else {
-                    if (sb != null ) sb.append(line).append("\r\n");
+                    if (sb != null) {
+                        sb.append(line).append("\r\n");
+                    }
                 }
-               
+
+            }
+            if (sp != null && sb != null) {
+                sp.parse(sb.toString());
             }
 //                               try ( CSVParser parser = new CSVParser(br, CSVFormat.DEFAULT)) {
 //                            for (final CSVRecord record: parser) {
