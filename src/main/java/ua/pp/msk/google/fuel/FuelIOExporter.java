@@ -19,14 +19,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
+import java.security.GeneralSecurityException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.google.fuel.parsers.ParserFactory;
 import ua.pp.msk.google.fuel.parsers.SectionParser;
@@ -74,8 +70,8 @@ public class FuelIOExporter {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (GeneralSecurityException | IOException t) {
+            LoggerFactory.getLogger(FuelIOExporter.class).error(t.getMessage(), t);
             System.exit(1);
         }
     }
@@ -125,21 +121,6 @@ public class FuelIOExporter {
         // Build a new authorized API client service.
         Drive service = getDriveService();
 
-        // Print the names and IDs for up to 10 files.
-//        FileList result = service.files().list()
-//             .setPageSize(20)
-//             .setFields("nextPageToken, files(id, name)")
-//             .execute();
-//        List<File> files = result.getFiles();
-//        if (files == null || files.size() == 0) {
-//            System.out.println("No files found.");
-//        } else {
-//            System.out.println("Files:");
-//            for (File file : files) {
-//                System.out.printf("%s (%s)\n", file.getName(), file.getId());
-//            }
-//        }
-        //0B4GzeDA85UlVYTI5NXFBWTdIZlE
         parseFile(service, "0B4GzeDA85UlVYTI5NXFBWTdIZlE");
 
     }

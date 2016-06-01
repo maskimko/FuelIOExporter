@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'war'
 apply plugin: 'application'
 
 mainClassName = 'ua.pp.msk.google.fuel.FuelIOExporter'
@@ -7,6 +8,7 @@ targetCompatibility = 1.8
 version = '1.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -16,5 +18,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-drive:v3-rev6-1.20.0'
     compile 'org.apache.commons:commons-csv:1.2'
     compile 'org.slf4j:slf4j-log4j12:1.7.21'
+    compile 'org.springframework:spring-webmvc:4.1.6.RELEASE'
+    providedCompile 'javax.servlet:servlet-api:2.5'
 
 }
