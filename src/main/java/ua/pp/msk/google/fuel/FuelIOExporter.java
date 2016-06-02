@@ -19,15 +19,22 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import java.security.GeneralSecurityException;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.management.Query;
 
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.google.fuel.parsers.ParserFactory;
 import ua.pp.msk.google.fuel.parsers.SectionParser;
 
 public class FuelIOExporter {
+
+    private static String FUELIOID;
+    private static String FUELIOIDSYNC;
 
     /**
      * Application name.
@@ -120,13 +127,75 @@ public class FuelIOExporter {
     public static void main(String[] args) throws IOException {
         // Build a new authorized API client service.
         Drive service = getDriveService();
+       
+        listFuelIOFileIds(service).stream().forEach(sid -> parseFile(service, sid));
+    }
 
-        parseFile(service, "0B4GzeDA85UlVYTI5NXFBWTdIZlE");
+    public static void listAllFiles(Drive service) throws IOException {
+        listFileIds(service, null);
+    }
+
+    public static List<String> listFileIds(Drive service, String query) throws IOException {
+        List<String> ids = new LinkedList<>();
+        Drive.Files.List list = service.files().list();
+        if (query != null && query.length() > 0) {
+            list.setQ(query);
+        }
+        do {
+            FileList files = list.execute();
+            files.getFiles().forEach((f) -> {LoggerFactory.getLogger(FuelIOExporter.class).debug(String.format("%s\t%s", f.getName(), f.getId())); ids.add(f.getId());});
+            list.setPageToken(files.getNextPageToken());
+        } while (list.getPageToken() != null && list.getPageToken().length() > 0);
+        return ids;
+    }
+
+    public static List<String> listFuelIOFileIds(Drive service) throws IOException {
+        
+        // listFiles(service, "?q='0B4GzeDA85UlVY2k0cEpiZ1ZFVnc'+in+parents");
+        
+        return listFileIds(service, String.format("'%s' in parents", getFuelIOSyncId(service)));
 
     }
+
+    private static synchronized String getFuelIOId(Drive service) {
+        if (FUELIOID == null || FUELIOID.length() == 0) {
+            try {
+                Drive.Files.List list = service.files().list();
+                list.setQ("name = 'Fuelio'");
+                List<File> files = list.execute().getFiles();
+                if (!files.isEmpty()) {
+                    String fioId = files.get(0).getId();
+                    LoggerFactory.getLogger(FuelIOExporter.class).debug("Found FuelIO folder with ID " + fioId);
+                    FUELIOID = fioId;
+                }
+            } catch (IOException ex) {
+                LoggerFactory.getLogger(FuelIOExporter.class).error(ex.getMessage(), ex);
+            }
+        }
+        return FUELIOID;
+    }
     
-    private static void parseFile(Drive service, String id){
-         Pattern headerPattern = Pattern.compile("^\"?##.*\"?");
+    private static synchronized String getFuelIOSyncId(Drive service) {
+        if (FUELIOIDSYNC == null || FUELIOIDSYNC.length() == 0) {
+            try {
+                Drive.Files.List list = service.files().list();
+                list.setQ(String.format("name = '%s' and '%s' in parents", "sync", getFuelIOId(service)));
+                List<File> files = list.execute().getFiles();
+                if (!files.isEmpty()) {
+                    String fioSynId = files.get(0).getId();
+                    LoggerFactory.getLogger(FuelIOExporter.class).debug("Found FuelIO sync folder with ID " + fioSynId);
+                    FUELIOIDSYNC = fioSynId;
+                }
+            } catch (IOException ex) {
+                LoggerFactory.getLogger(FuelIOExporter.class).error(ex.getMessage(), ex);
+            }
+        }
+        return FUELIOIDSYNC;
+    }
+
+    private static void parseFile(Drive service, String id) {
+        LoggerFactory.getLogger(FuelIOExporter.class).debug("Parsing file id " + id);
+        Pattern headerPattern = Pattern.compile("^\"?##.*\"?");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(service.files().get(id).executeMediaAsInputStream()))) {
             String line;
             SectionParser sp = null;
