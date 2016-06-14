@@ -69,13 +69,16 @@ public class LogParser extends AbstractParser<Log> {
                 l.setCity(r.get(super.headerMap.get(CITY)));
                 l.setNotes(r.get(super.headerMap.get(NOTES)));
                 l.setMissed(Integer.parseInt(r.get(super.headerMap.get(MISSED))) > 0);
-                l.setTankNumber(Integer.parseInt(r.get(super.headerMap.get(TANKNUMBER))));
-                l.setFuelType(Integer.parseInt(r.get(super.headerMap.get(FUELTYPE))));
+                Integer tn = super.headerMap.get(TANKNUMBER); 
+                l.setTankNumber((tn == null) ? 1 : Integer.parseInt(r.get(tn)));
+                Integer ft = super.headerMap.get(FUELTYPE);
+                l.setFuelType((ft == null) ? 0 : Integer.parseInt(r.get(ft)));
                 entries.add(l);
             } catch (ParseException ex) {
                 LoggerFactory.getLogger(this.getClass()).error("Cannot parse date in CSV record " + r.toString());
             }
         }
+        ParserFactory.currentVehicle.setLogs(entries);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class CostParser extends AbstractParser<Cost> {
                 LoggerFactory.getLogger(this.getClass()).error("Cannot parse CSV record " + r.toString(), ex);
             }
         });
+        ParserFactory.currentVehicle.setCosts(entries);
     }
 
     @Override

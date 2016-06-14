@@ -36,6 +36,7 @@ public class CostCategoryParser extends AbstractParser<CostCategory>{
             current.setColor(r.get(super.headerMap.get(COLOR)));
             cc.add(current);
         });
+        ParserFactory.currentVehicle.setCostCategories(cc);
     }
 
     @Override

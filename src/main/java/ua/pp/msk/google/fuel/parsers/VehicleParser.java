@@ -6,13 +6,8 @@
 
 package ua.pp.msk.google.fuel.parsers;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.google.fuel.entities.Vehicle;
 
@@ -50,6 +45,7 @@ public class VehicleParser extends AbstractParser<Vehicle>{
      super.parse(s);
         super.records.forEach(r -> { 
             try {
+                LoggerFactory.getLogger(this.getClass()).debug(String.format("Working on CSV record %s", r.toString()));
                 Vehicle v = new Vehicle();
                 v.setName(getAsString(r, NAME));
                 v.setDescription(getAsString(r, DESCRIPTION));
@@ -72,6 +68,7 @@ public class VehicleParser extends AbstractParser<Vehicle>{
                 LoggerFactory.getLogger(this.getClass()).error(ex.getMessage(), ex);
             }
         });
+        if (entries.size() > 1) LoggerFactory.getLogger(this.getClass()).warn("Multiple vehicles occured in the file!!!");
     }
 
     @Override

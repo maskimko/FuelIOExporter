@@ -6,7 +6,6 @@
 
 package ua.pp.msk.google.fuel.parsers;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ua.pp.msk.google.fuel.entities.Vehicle;
 
@@ -35,5 +34,9 @@ public class ParserFactory {
             sp = new CostParser();
         }
         return sp;
+    }
+    
+    public static Vehicle getCurrentVehicle(){
+        return currentVehicle;
     }
 }

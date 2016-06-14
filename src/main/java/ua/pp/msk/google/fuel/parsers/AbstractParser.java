@@ -60,7 +60,10 @@ public abstract class AbstractParser<T> implements SectionParser {
         if (headerMap == null || headerMap.isEmpty()) {
             throw new IllegalStateException("Header Map is emplty. Cannot get the value. Perhaps parse method has been not run yet...");
         }
-        String val = r.get(headerMap.get(header));
+        Integer headerNumber = headerMap.get(header);
+        if (headerNumber == null) return null;
+        String val = r.get(headerNumber);
+        if (val == null) return null;
         return val.trim();
 
     }

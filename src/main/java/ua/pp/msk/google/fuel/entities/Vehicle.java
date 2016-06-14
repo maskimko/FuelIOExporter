@@ -6,6 +6,7 @@
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.io.Serializable;
 public class Vehicle implements Serializable {
 
     private long id;
-
+    private String googleId;
     private String name;
     private String description;
     private int distanceUnit;
@@ -31,6 +32,9 @@ public class Vehicle implements Serializable {
     private int tankCount;
     private int tank1Type;
     private int tank2Type;
+    private List<CostCategory> costCategories;
+    private List<Cost> costs;
+    private List<Log> logs;
 
     public long getId() {
         return id;
@@ -38,6 +42,14 @@ public class Vehicle implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getName() {
@@ -160,4 +172,31 @@ public class Vehicle implements Serializable {
         this.tank2Type = tank2Type;
     }
 
+    public List<CostCategory> getCostCategories() {
+        return costCategories;
+    }
+
+    public void setCostCategories(List<CostCategory> costCategories) {
+        this.costCategories = costCategories;
+    }
+
+    public List<Cost> getCosts() {
+        return costs;
+    }
+
+    public void setCosts(List<Cost> costs) {
+        this.costs = costs;
+    }
+
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<Log> logs) {
+        this.logs = logs;
+    }
+
+   
+
+    
 }
