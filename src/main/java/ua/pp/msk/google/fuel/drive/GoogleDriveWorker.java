@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.google.fuel.FuelIOExporter;
+import ua.pp.msk.google.fuel.entities.Vehicle;
 import ua.pp.msk.google.fuel.parsers.ParserFactory;
 import ua.pp.msk.google.fuel.parsers.SectionParser;
 
@@ -215,7 +216,8 @@ public class GoogleDriveWorker {
         return FUELIOIDSYNC;
     }
 
-    public  void parseFile(Drive service, String id) {
+    public  Vehicle parseFile(Drive service, String id) {
+       Vehicle v = null;
         LoggerFactory.getLogger(FuelIOExporter.class).debug("Parsing file id " + id);
         Pattern headerPattern = Pattern.compile("^\"?##.*\"?");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(service.files().get(id).executeMediaAsInputStream()))) {
@@ -240,9 +242,11 @@ public class GoogleDriveWorker {
             if (sp != null && sb != null) {
                 sp.parse(sb.toString());
             }
-            ParserFactory.getCurrentVehicle().setGoogleId(id);
+            v= ParserFactory.getCurrentVehicle();
+            v.setGoogleId(id);
         } catch (IOException ioex) {
             LoggerFactory.getLogger(FuelIOExporter.class).error(ioex.getMessage(), ioex);
         }
+        return v;
     }
 }

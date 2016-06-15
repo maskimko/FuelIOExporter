@@ -3,7 +3,11 @@ package ua.pp.msk.google.fuel;
 import java.io.IOException;
 
 import com.google.api.services.drive.Drive;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 import ua.pp.msk.google.fuel.drive.GoogleDriveWorker;
+import ua.pp.msk.google.fuel.entities.Vehicle;
 
 public class FuelIOExporter {
 
@@ -16,7 +20,8 @@ public class FuelIOExporter {
         GoogleDriveWorker gdw = new GoogleDriveWorker();
         Drive service = gdw.getDriveService();
        
-        gdw.listFuelIOFileIds(service).stream().forEach(sid -> gdw.parseFile(service, sid));
+       Collection<Vehicle> vl = gdw.listFuelIOFileIds(service).stream().map(sid -> gdw.parseFile(service, sid)).collect(Collectors.toCollection(LinkedList::new));
+       vl.forEach(System.out::println);
     }
 
    

@@ -6,7 +6,9 @@
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Calendar;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -151,6 +153,22 @@ public class Cost implements Serializable {
 
     public void setRepeatMonths(int repeatMonths) {
         this.repeatMonths = repeatMonths;
+    }
+ @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("\tCost:\n");
+        try {
+            for (Field f : this.getClass().getDeclaredFields()) {
+                if (f.getType().equals(Calendar.class)){sb.append(String.format("\t\t%-18s : %tF\n", f.getName(), (Calendar)f.get(this)));} else {
+                    sb.append(String.format("\t\t%-18s : %s\n", f.getName(), f.get(this)));
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            LoggerFactory.getLogger(this.getClass()).warn("Cannot produce a pretty output, fall back to the standard one");
+            LoggerFactory.getLogger(this.getClass()).debug("This should never happen" + ex.getMessage(), ex);
+            sb.append("{" + "id=").append(id).append(", costTitle=").append(costTitle).append(", date=").append(date).append(", odometer=").append(odometer).append(", costTypeId=").append(costTypeId).append(", notes=").append(notes).append(", cost=").append(cost).append(", flag=").append(flag).append(", idR=").append(idR).append(", read=").append(read).append(", remindOdometer=").append(remindOdometer).append(", remindDate=").append(remindDate).append(", isTemplate=").append(isTemplate).append(", repeatOdometer=").append(repeatOdometer).append(", repeatMonths=").append(repeatMonths).append('}');
+        }
+        return sb.toString();
     }
 
 }

@@ -6,7 +6,9 @@
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.List;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -194,6 +196,29 @@ public class Vehicle implements Serializable {
 
     public void setLogs(List<Log> logs) {
         this.logs = logs;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Vehicle:\n");
+        try {
+        
+        for ( Field f : this.getClass().getDeclaredFields()){
+            if (!f.getType().equals(List.class)){
+            sb.append(String.format("\t%-18s : %s\n", f.getName(), f.get(this)));
+            } else {
+                sb.append(String.format("\tList of %s\n", f.getName()));
+                List l = (List) f.get(this);
+                for (Object o : l) {
+                    sb.append(String.format("%s\n", o));
+                }
+            }
+        } } catch (IllegalAccessException ex) {
+            LoggerFactory.getLogger(this.getClass()).warn("Cannot produce a pretty output, fall back to the standard one");
+            LoggerFactory.getLogger(this.getClass()).debug("This should never happen" + ex.getMessage(), ex);
+            sb.append("{" + "id=" + id + ", googleId=" + googleId + ", name=" + name + ", description=" + description + ", distanceUnit=" + distanceUnit + ", fuelUnit=" + fuelUnit + ", consumptionUnit=" + consumptionUnit + ", importCSVDateFormat=" + importCSVDateFormat + ", vin=" + vin + ", insurance=" + insurance + ", plate=" + plate + ", make=" + make + ", model=" + model + ", year=" + year + ", tankCount=" + tankCount + ", tank1Type=" + tank1Type + ", tank2Type=" + tank2Type + ", costCategories=" + costCategories + ", costs=" + costs + ", logs=" + logs + '}');
+        }
+        return sb.toString();
     }
 
    

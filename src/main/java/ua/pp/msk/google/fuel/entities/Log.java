@@ -6,10 +6,12 @@
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,8 +20,10 @@ import java.util.Date;
  */
 public class Log implements Serializable {
 
-    private long id;
     
+  //  private static DateFormat sdf = SimpleDateFormat.getDateInstance(DateFormat.DEFAULT);
+    private long id;
+
     private Calendar date;
     private int odometer;
     private float fuel;
@@ -42,7 +46,6 @@ public class Log implements Serializable {
         this.id = id;
     }
 
-    
     public Calendar getDate() {
         return date;
     }
@@ -155,6 +158,23 @@ public class Log implements Serializable {
 
     public void setFuelType(int fuelType) {
         this.fuelType = fuelType;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("\tLog:\n");
+        try {
+            for (Field f : this.getClass().getDeclaredFields()) {
+                if (f.getType().equals(Calendar.class)){sb.append(String.format("\t\t%-18s : %tF\n", f.getName(), (Calendar)f.get(this)));} else {
+                    sb.append(String.format("\t\t%-18s : %s\n", f.getName(), f.get(this)));
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            LoggerFactory.getLogger(this.getClass()).warn("Cannot produce a pretty output, fall back to the standard one");
+            LoggerFactory.getLogger(this.getClass()).debug("This should never happen" + ex.getMessage(), ex);
+            sb.append("{" + "id=").append(id).append(", date=").append(date).append(", odometer=").append(odometer).append(", fuel=").append(fuel).append(", full=").append(full).append(", price=").append(price).append(", consumption=").append(consumption).append(", latitude=").append(latitude).append(", longitude=").append(longitude).append(", city=").append(city).append(", notes=").append(notes).append(", missed=").append(missed).append(", tankNumber=").append(tankNumber).append(", fuelType=").append(fuelType).append('}');
+        }
+        return sb.toString();
     }
 
 }

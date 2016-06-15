@@ -6,6 +6,8 @@
 package ua.pp.msk.google.fuel.entities;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,6 +60,23 @@ public class CostCategory implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("\tCost Category:\n");
+        try {
+            for (Field f : this.getClass().getDeclaredFields()) {
+                
+                    sb.append(String.format("\t\t%-18s : %s\n", f.getName(), f.get(this)));
+                
+            }
+        } catch (IllegalAccessException ex) {
+            LoggerFactory.getLogger(this.getClass()).warn("Cannot produce a pretty output, fall back to the standard one");
+            LoggerFactory.getLogger(this.getClass()).debug("This should never happen" + ex.getMessage(), ex);
+            sb.append("{" + "id=").append(id).append(", costTypeId=").append(costTypeId).append(", name=").append(name).append(", priority=").append(priority).append(", color=").append(color).append('}');
+        }
+        return sb.toString();
     }
 
 }
